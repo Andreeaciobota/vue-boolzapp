@@ -1,4 +1,7 @@
 const {createApp} = Vue;
+const DateTime = luxon.DateTime;
+
+
 createApp({
     data() {
         return {
@@ -167,27 +170,49 @@ createApp({
             ],
             activeContact: 0,
             myMessage: "",
-            theirMessage: "ok"
-        }
+            foundContacts: ""
+        };
     },
     methods: {
         changeContact(clickedIndex) {
             this.activeContact = clickedIndex;
         },
         newMessage() {
-            if (this.myMessage.length > 1) {
-                this.contacts[this.activeContact].messages.push({message:this.myMessage, status: 'sent'})
+            if (this.myMessage.length >= 1) {
+                const currentDate = DateTime.now().setLocale('it');
+                const formattedDate = currentDate.toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS);
+
+                this.contacts[this.activeContact].messages.push({
+                    date: formattedDate,
+                    message: this.myMessage,
+                    status: 'sent'
+                });
+
                 this.myMessage = "";
+                this.automaticMessage();
             }
-            this.automaticMessage();
         },
         automaticMessage() {
-            console.log(this.theirMessage);
-            setInterval(function () {
-                this.contacts[this.activeContact].messages.push({message:this.theirMessage, status: 'received'});
-            }, 1000)
+            let contacts = this.contacts;
+            let activeContact = this.activeContact;
+            let time = DateTime.now().setLocale('it').toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS);
+            setTimeout(function () {
+                contacts[activeContact].messages.push({
+                    date: time,
+                    message: 'ok',
+
+                    status: 'received'
+                });
+            }, 1000);
+        },
+        searchContacts() {
+            for (let i = 0; i < this.contacts.length; i++) {
+                if (!this.contacts[i].name.toLowerCase().includes(this.foundContacts.toLowerCase())) {
+                    this.contacts[i].visible = false;
+                } else if (this.foundContacts === "") {
+                    this.contacts[i].visible = true;
+                }
+            }
         }
-    },
-    created() {
     }
 }).mount("#app");
