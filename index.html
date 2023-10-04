@@ -1,21 +1,22 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="css/style.css">
-  <title>Boolzapp</title>
-  <!-- JS Framework -->
-  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-  <!-- Fontawesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <!-- Font -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boolzapp</title>
+    <!-- Custom Style -->
+    <link rel="stylesheet" href="css/style.css">
+    <!-- JS Framework -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <!-- Fontawesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div id="app">
+    <div id="app">
         <div class="webapp-container">
             <div class="whatsapp-container">
                 <!-- SIDEBAR SECTION -->
@@ -55,7 +56,7 @@
                     </div>
                     <!-- CONTACT SECTION -->
                     <div class="contact-section">
-                        <div v-for="(contact, index) in contacts"       class="single-contact">
+                        <div :class="activeContact === index ? 'currentContact' : ''" @click="changeContact(index)" v-for="(contact, index) in contacts" class="single-contact">
                             <div class="circle-profile">
                                 <img :src=" 'img/avatar' + contact.avatar  + '.jpg' ">
                             </div>
@@ -64,20 +65,22 @@
                                     {{contact.name}}
                                 </h4>
                             </div>
+                            <div class="contact-time">
+                                <span>12:00</span>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <!-- /SIDEBAR SECTION -->
-
                 <!-- MAIN SECTION -->
                 <div class="main-section">
                     <div class="header-main">
                         <div class="addressee-profile">
                             <div class="circle-profile">
-                                <img src="img/avatar_1.jpg">
+                                <img :src="`img/avatar${contacts[activeContact].avatar}.jpg`">
                             </div>
                             <div class="addressee-info">
-                                <span>Michele</span>
+                                <span>{{contacts[activeContact].name}}</span>
                                 <span id="last-online">Ultimo accesso alle 12:00</span>
                             </div>
                         </div>
@@ -88,22 +91,31 @@
                         </div>
                     </div>
                     <div class="chat-section">
-
+                        <div v-for="(message) in contacts[activeContact].messages" :class=" `${message.status}` " class="single-msg">
+                            <div class="msg-box">
+                                <div class="msg-text">
+                                    {{message.message}}
+                                </div>
+                                <div class="msg-info">
+                                    <span>{{message.date}}</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="message-section">
-
+                        <div class="emojis">
+                            <i class="fa-regular fa-face-smile"></i>
+                        </div>
+                        <input v-model.trim="myMessage" @keyup.enter="newMessage" id="message-chat" type="text" placeholder="Scrivi un messaggio">
+                        <div class="vocal-msg">
+                            <i class="fa-solid fa-microphone"></i>
+                        </div>
+                      </div>
                     </div>
+                    <!-- /MAIN SECTION -->
                 </div>
-                <!-- /MAIN SECTION -->
             </div>
         </div>
-    </div>
-    
-
-
-
-
-
-  <script src="js/script.js"></script>
-</body>
-</html>
+        <script src="js/script.js"></script>
+    </body>
+    </html>
